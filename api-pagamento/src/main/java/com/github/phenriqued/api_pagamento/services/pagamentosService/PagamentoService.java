@@ -5,7 +5,6 @@ import com.github.phenriqued.api_pagamento.DTOs.pagamentoDTOs.PagamentoDTO;
 import com.github.phenriqued.api_pagamento.models.pagamentos.Pagamento;
 import com.github.phenriqued.api_pagamento.repositories.pagamentosRepository.PagamentoRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -18,7 +17,7 @@ public class PagamentoService {
 
     private final PagamentoRepository repository;
 
-    public PagamentoService(PagamentoRepository repository, ModelMapper modelMapper) {
+    public PagamentoService(PagamentoRepository repository) {
         this.repository = repository;
     }
 
