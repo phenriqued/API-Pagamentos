@@ -1,4 +1,4 @@
-## 🎯 API de Pagamentos: Explorando Microsserviços com Spring Cloud
+## 🎯 Estudando Microsserviços com Spring Cloud
 
 Este repositório é um **laboratório prático** e focado na exploração de padrões de arquitetura de **Microsserviços**, utilizando o ecossistema **Java** e **Spring Boot/Spring Cloud**.
 
