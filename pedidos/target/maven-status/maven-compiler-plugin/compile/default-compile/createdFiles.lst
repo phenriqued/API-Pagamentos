@@ -1,0 +1,3 @@
+br\com\alurafood\pedidos\model\Pedido.class
+br\com\alurafood\pedidos\model\ItemDoPedido.class
+br\com\alurafood\pedidos\model\Status.class
