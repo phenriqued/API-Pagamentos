@@ -3,6 +3,7 @@ package com.github.phenriqued.api_pagamento.controllers.pagamentosController;
 import com.github.phenriqued.api_pagamento.DTOs.pagamentoDTOs.CreatePagamentoDTO;
 import com.github.phenriqued.api_pagamento.DTOs.pagamentoDTOs.PagamentoDTO;
 import com.github.phenriqued.api_pagamento.services.pagamentosService.PagamentoService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Pageable;
@@ -50,6 +51,17 @@ public class PagamentoController {
     public ResponseEntity<Void> deletePayment(@PathVariable(name = "id") @NotNull Long id){
         pagamentoService.deletePayment(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/aprovado")
+    @CircuitBreaker(name = "atualizar-pedido", fallbackMethod = "atualizarPagamentoIntegracaoPendente")
+    public ResponseEntity<Void> pagamentoAprovado(@PathVariable(name = "id") @NotNull Long id){
+        pagamentoService.updateAprovado(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    public void atualizarPagamentoIntegracaoPendente(Long id, Exception exception){
+        pagamentoService.updateIntegracaoPedente(id);
     }
 
 

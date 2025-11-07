@@ -2,9 +2,12 @@ package com.github.phenriqued.api_pagamento.services.pagamentosService;
 
 import com.github.phenriqued.api_pagamento.DTOs.pagamentoDTOs.CreatePagamentoDTO;
 import com.github.phenriqued.api_pagamento.DTOs.pagamentoDTOs.PagamentoDTO;
+import com.github.phenriqued.api_pagamento.client.PedidosClient;
 import com.github.phenriqued.api_pagamento.models.pagamentos.Pagamento;
+import com.github.phenriqued.api_pagamento.models.pagamentos.Status;
 import com.github.phenriqued.api_pagamento.repositories.pagamentosRepository.PagamentoRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -16,9 +19,11 @@ import java.util.List;
 public class PagamentoService {
 
     private final PagamentoRepository repository;
+    private final PedidosClient pedidosClient;
 
-    public PagamentoService(PagamentoRepository repository) {
+    public PagamentoService(PagamentoRepository repository, PedidosClient pedidosClient) {
         this.repository = repository;
+        this.pedidosClient = pedidosClient;
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
@@ -46,6 +51,22 @@ public class PagamentoService {
 
     public void deletePayment(Long id){
         repository.deleteById(id);
+    }
+
+    public void updateAprovado(@NotNull Long id) {
+        Pagamento pagamento = updateStatus(id, Status.CONFIRMADO);
+        pedidosClient.confirmarPagamento(pagamento.getPedidoId());
+    }
+
+    public void updateIntegracaoPedente(Long id) {
+        updateStatus(id, Status.CONFIRMADO_SEM_INTEGRACAO);
+    }
+
+    private Pagamento updateStatus(Long id, Status status){
+        Pagamento pagamento = repository.findById(id).orElseThrow(EntityNotFoundException::new);
+        pagamento.setStatus(status);
+        repository.flush();
+        return pagamento;
     }
 
 }
